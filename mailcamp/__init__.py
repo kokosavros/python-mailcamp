@@ -12,5 +12,5 @@ class MailCamp(MailCampClient):
         :param args:
         :param kwargs:
         """
-        super(MailCamp, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.token_check = TokenCheck(self)

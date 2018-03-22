@@ -9,7 +9,6 @@ class BaseApi:
         A base API class to contruct the various xml strings to be requested
         :param mailcamp_client:
         """
-        super(BaseApi, self).__init__()
         self._mailcamp_client = mailcamp_client
        
     def _get_xml_request(self, requesttype, requestmethod, details):

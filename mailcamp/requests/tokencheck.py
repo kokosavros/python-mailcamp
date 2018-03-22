@@ -17,7 +17,7 @@ class TokenCheck(BaseApi):
     request_method = 'xmlapitest'
     
     def __init__(self, *args, **kwargs):
-        super(TokenCheck, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def is_valid(self):
         """
