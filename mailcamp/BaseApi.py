@@ -28,22 +28,16 @@ class BaseApi:
         return '<username>{0}</username><usertoken>{1}</usertoken>'.format(
             self._mailcamp_client.username, self._mailcamp_client.xml_token)
     
-    @staticmethod
-    def _get_xml_request_details_part(details):
+    def _get_xml_request_details_part(self, details):
         """
         Returns the details part of the xml request
         :param details: A dict with the various details of the request
         :return:
         """
+        xml_string = '<details>{}</details>'
         if details is None:
-            return '<details> </details>'
-        body = ''
-        for k, v in details.items():
-            if v is None:
-                body += '<{0}> </{0}>'.format(k)
-                continue
-            body += '<{0}>{1}</{0}>'.format(k, v)
-        return body
+            return xml_string.format(' ')
+        return xml_string.format(self.dicttoxml(details))
 
     @staticmethod
     def _get_xml_request_attr_part(requesttype, requestmethod):
@@ -58,3 +52,16 @@ class BaseApi:
         <requesttype>{0}</requesttype>
         <requestmethod>{1}</requestmethod>
         """.format(requesttype, requestmethod)
+    
+    def dicttoxml(self, d):
+        body = ''
+        for k, v in d.items():
+            if v is None:
+                body += '<{0}> </{0}>'.format(k)
+                continue
+            if isinstance(v, dict):
+                secondary_dict = self.dicttoxml(v)
+                body += '<{0}>{1}</{0}>'.format(k, secondary_dict)
+                continue
+            body += '<{0}>{1}</{0}>'.format(k, v)
+        return body
