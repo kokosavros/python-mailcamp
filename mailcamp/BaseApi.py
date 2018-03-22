@@ -36,6 +36,8 @@ class BaseApi:
         :param details: A dict with the various details of the request
         :return:
         """
+        if details is None:
+            return '<details> </details>'
         body = ''
         for k, v in details.items():
             if v is None:
