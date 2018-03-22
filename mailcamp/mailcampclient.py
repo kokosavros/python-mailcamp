@@ -22,4 +22,4 @@ class MailCampClient:
         :param xml_request:
         :return:
         """
-        return re.post(self.url, data=xml_request)
+        return re.post(self.url, data=xml_request).content.decode('utf-8')
