@@ -1,5 +1,7 @@
 from mailcamp.mailcampclient import MailCampClient
 from mailcamp.requests.tokencheck import TokenCheck
+from mailcamp.requests.user import User
+from mailcamp.requests.newsletters import Newsletters
 
 
 class MailCamp(MailCampClient):
@@ -14,3 +16,6 @@ class MailCamp(MailCampClient):
         """
         super().__init__(*args, **kwargs)
         self.token_check = TokenCheck(self)
+        self.user = User(self)
+        self.newsletters = Newsletters(self)
+
