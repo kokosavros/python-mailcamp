@@ -5,6 +5,7 @@ Documentation: https://www.mailcamp.nl/api/en/#api-Newsletter
 """
 from mailcamp.BaseApi import BaseApi
 from mailcamp.helpers import xmltodict
+from mailcamp.errors import MailCampError
 from datetime import datetime
 
 
@@ -39,7 +40,9 @@ class Newsletters(BaseApi):
         response_dict = xmltodict(response)
         # Check if response status is ok
         if response_dict.get('status', 'FAILED') == 'FAILED':
-            raise ConnectionError('Could not retrieve data')
+            raise MailCampError(
+                response_dict.get(
+                    'errormessage', 'Mailcamp returned an error'))
         data = response_dict.get('data', dict())
         newsletters = data.get('item', list())
         # Filter the newsletters
@@ -98,5 +101,7 @@ class Newsletters(BaseApi):
         response_dict = xmltodict(response)
         # Check if response status is ok
         if response_dict.get('status', 'FAILED') == 'FAILED':
-            raise ConnectionError('Could not retrieve data')
+            raise MailCampError(
+                response_dict.get(
+                    'errormessage', 'Mailcamp returned an error'))
         return response_dict['data']
