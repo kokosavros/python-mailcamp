@@ -38,7 +38,8 @@ def xmltodict(xml_string):
             obj = result.get(child.tag)
             new = xmltodict(et.tostring(child).decode())
             if obj and isinstance(obj, list):
-                result[child.tag] = obj.append(new)
+                obj.append(new)
+                result[child.tag] = obj
                 continue
             if obj:
                 a = list([obj])

@@ -24,4 +24,4 @@ class User(BaseApi):
             details=None)
         response = self._mailcamp_client._post(request)
         response_dict = xmltodict(response)
-        print(response_dict)
+        return response_dict.get('data', dict()).get('userid')
