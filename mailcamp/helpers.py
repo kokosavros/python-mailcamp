@@ -21,6 +21,10 @@ def dicttoxml(dictionary):
             secondary_dict = dicttoxml(v)
             xml_string += '<{0}>{1}</{0}>'.format(k, secondary_dict)
             continue
+        if isinstance(v, list):
+            for i in v:
+                xml_string += dicttoxml({k: i})
+            continue
         xml_string += '<{0}>{1}</{0}>'.format(k, v)
     return xml_string
 

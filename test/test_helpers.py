@@ -12,6 +12,8 @@ class TestHelpers(unittest.TestCase):
         self.assertEqual(
             result, '', 'Empty dictionary does not return empty string')
 
+        print(dicttoxml({'b': {'a': [1, 2, 3]}}))
+
     def test_xmltodict(self):
         xml = """<xmlrequest>
                 <status>success</status>
