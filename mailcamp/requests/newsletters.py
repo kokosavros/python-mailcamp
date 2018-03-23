@@ -4,8 +4,6 @@ Newsletter related actions
 Documentation: https://www.mailcamp.nl/api/en/#api-Newsletter
 """
 from mailcamp.BaseApi import BaseApi
-from mailcamp.helpers import xmltodict
-from mailcamp.errors import MailCampError
 from datetime import datetime
 
 
@@ -36,14 +34,7 @@ class Newsletters(BaseApi):
         request = self._get_xml_request(
             requesttype=self.request_type, requestmethod=request_method,
             details=details)
-        response = self._mailcamp_client._post(request)
-        response_dict = xmltodict(response)
-        # Check if response status is ok
-        if response_dict.get('status', 'FAILED') == 'FAILED':
-            raise MailCampError(
-                response_dict.get(
-                    'errormessage', 'Mailcamp returned an error'))
-        data = response_dict.get('data', dict())
+        data = self._mailcamp_client._post(request)
         newsletters = data.get('item', list())
         # Filter the newsletters
         return [
@@ -97,11 +88,5 @@ class Newsletters(BaseApi):
         request = self._get_xml_request(
             requesttype=self.request_type, requestmethod=request_method,
             details=details)
-        response = self._mailcamp_client._post(request)
-        response_dict = xmltodict(response)
-        # Check if response status is ok
-        if response_dict.get('status', 'FAILED') == 'FAILED':
-            raise MailCampError(
-                response_dict.get(
-                    'errormessage', 'Mailcamp returned an error'))
-        return response_dict['data']
+        data = self._mailcamp_client._post(request)
+        return data

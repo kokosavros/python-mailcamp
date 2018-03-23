@@ -1,4 +1,9 @@
 import requests as re
+from mailcamp.helpers import xmltodict
+
+
+class MailCampError(Exception):
+    pass
 
 
 class MailCampClient:
@@ -22,4 +27,21 @@ class MailCampClient:
         :param xml_request:
         :return:
         """
-        return re.post(self.url, data=xml_request).content.decode('utf-8')
+        response = re.post(self.url, data=xml_request).content.decode('utf-8')
+        # Transform response into dict
+        response_dict = xmltodict(response)
+        self._check_response_status(response_dict)
+        return response_dict['data']
+
+    @staticmethod
+    def _check_response_status(response):
+        """
+        This function checks the status of the response and raises an error
+        if the response was not successful
+        :param response: The dictionary of the response
+        :return:
+        """
+        if response.get('status', 'FAILED') == 'FAILED':
+            raise MailCampError(
+                response.get(
+                    'errormessage', 'Mailcamp returned an error'))
