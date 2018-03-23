@@ -2,6 +2,7 @@
 In this file various helper functions can be found and utilized throughout
 the package.
 """
+import xml.etree.ElementTree as et
 
 
 def dicttoxml(dictionary):
@@ -22,3 +23,33 @@ def dicttoxml(dictionary):
             continue
         xml_string += '<{0}>{1}</{0}>'.format(k, v)
     return xml_string
+
+
+def xmltodict(xml_string):
+    """
+    This function returns a dictionary from a xml_string
+    :param xml_string:
+    :return:
+    """
+    result = dict()
+    for child in et.fromstring(xml_string):
+        if list(child):
+            obj = result.get(child.tag)
+            new = xmltodict(et.tostring(child).decode())
+            if obj and isinstance(obj, list):
+                result[child.tag] = obj.append(new)
+                continue
+            if obj:
+                a = list([obj])
+                a.append(new)
+                result[child.tag] = a
+                continue
+            result[child.tag] = new
+            continue
+        if result.get(child.tag):
+            a = list(result.get(child.tag))
+            a.append(child.text)
+            result[child.tag] = a
+            continue
+        result[child.tag] = child.text
+    return result
