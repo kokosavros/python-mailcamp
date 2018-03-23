@@ -6,7 +6,7 @@ Checks to make sure that the token that you are using is a valid token.
 Documentation: https://www.mailcamp.nl/api/en/#api-Additional-token
 """
 from mailcamp.BaseApi import BaseApi
-import xml.etree.ElementTree as et
+from mailcamp.helpers import xmltodict
 
 
 class TokenCheck(BaseApi):
@@ -28,7 +28,7 @@ class TokenCheck(BaseApi):
             requesttype=self.request_type, requestmethod=self.request_method,
             details=None)
         response = self._mailcamp_client._post(request)
-        for child in et.fromstring(response):
-            if child.tag == 'status' and child.text == 'SUCCESS':
-                return True
-            return False
+        response_dict = xmltodict(response)
+        if response_dict.get('status') == 'SUCCESS':
+            return True
+        return False
