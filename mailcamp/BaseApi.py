@@ -11,7 +11,7 @@ class BaseApi:
         :param mailcamp_client:
         """
         self._mailcamp_client = mailcamp_client
-       
+
     def _get_xml_request(self, requesttype, requestmethod, details):
         """
         
