@@ -14,8 +14,10 @@ def dicttoxml(dictionary):
     """
     xml_string = ''
     for k, v in dictionary.items():
-        if v is None:
+        if v is None and k == 'details':
             xml_string += '<{0}> </{0}>'.format(k)
+            continue
+        if v is None:
             continue
         if isinstance(v, dict):
             secondary_dict = dicttoxml(v)
