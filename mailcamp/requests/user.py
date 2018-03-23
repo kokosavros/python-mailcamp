@@ -2,8 +2,6 @@
 Get data for the user
 """
 from mailcamp.BaseApi import BaseApi
-from mailcamp.helpers import xmltodict
-from mailcamp.errors import MailCampError
 
 
 class User(BaseApi):
@@ -24,10 +22,5 @@ class User(BaseApi):
         request = self._get_xml_request(
             requesttype=self.request_type, requestmethod=self.request_method,
             details=None)
-        response = self._mailcamp_client._post(request)
-        response_dict = xmltodict(response)
-        if response_dict.get('status', 'FAILED') == 'FAILED':
-            raise MailCampError(
-                response_dict.get(
-                    'errormessage', 'Mailcamp returned an error'))
-        return response_dict.get('data', dict()).get('userid')
+        data = self._mailcamp_client._post(request)
+        return data.get('userid')
