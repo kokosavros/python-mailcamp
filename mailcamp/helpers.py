@@ -33,6 +33,7 @@ def xmltodict(xml_string):
     """
     result = dict()
     for child in et.fromstring(xml_string):
+        # If field has multiple children create list of their values
         if list(child):
             obj = result.get(child.tag)
             new = xmltodict(et.tostring(child).decode())
@@ -46,10 +47,12 @@ def xmltodict(xml_string):
                 continue
             result[child.tag] = new
             continue
+        # If value not empty create a list
         if result.get(child.tag):
             a = list(result.get(child.tag))
             a.append(child.text)
             result[child.tag] = a
             continue
+        # If value is empty give the text to the value.
         result[child.tag] = child.text
     return result
