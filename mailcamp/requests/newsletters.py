@@ -4,7 +4,7 @@ Newsletter related actions
 Documentation: https://www.mailcamp.nl/api/en/#api-Newsletter
 """
 from mailcamp.BaseApi import BaseApi
-import xml.etree.ElementTree as et
+from mailcamp.helpers import xmltodict
 
 
 class Newsletters(BaseApi):
@@ -31,17 +31,13 @@ class Newsletters(BaseApi):
             requesttype=self.request_type, requestmethod=request_method,
             details=details)
         response = self._mailcamp_client._post(request)
-        newsletters = list()
-        for child in et.fromstring(response):
-            if child.tag == 'status' and child.text == 'FAILED':
-                raise ConnectionError('Could not retrieve data')
-            if child.tag == 'data':
-                for d in child:
-                    if d.tag == 'item':
-                        if fields:
-                            newsletter = {
-                                i.tag: i.text for i in d if i.tag in fields}
-                        else:
-                            newsletter = {i.tag: i.text for i in d}
-                        newsletters.append(newsletter)
-        return newsletters
+        response_dict = xmltodict(response)
+        # Check if response status is ok
+        if response_dict.get('status', 'FAILED') == 'FAILED':
+            raise ConnectionError('Could not retrieve data')
+        data = response_dict.get('data', dict())
+        newsletters = data.get('item', list())
+        # Filter the newsletters
+        return [
+            {k: v for k, v in newsletter.items() if k in fields}
+            for newsletter in newsletters]

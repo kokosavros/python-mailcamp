@@ -2,8 +2,7 @@
 Get data for the user
 """
 from mailcamp.BaseApi import BaseApi
-import xml.etree.ElementTree as et
-
+from mailcamp.helpers import xmltodict
 
 class User(BaseApi):
     """
@@ -24,10 +23,5 @@ class User(BaseApi):
             requesttype=self.request_type, requestmethod=self.request_method,
             details=None)
         response = self._mailcamp_client._post(request)
-        for child in et.fromstring(response):
-            if child.tag == 'status' and child.text == 'FAILED':
-                raise ConnectionError('Authentication error')
-            if child.tag == 'data':
-                for data in child:
-                    if data.tag == 'userid':
-                        return data.text
+        response_dict = xmltodict(response)
+        return response_dict.get('data', dict()).get('userid')
